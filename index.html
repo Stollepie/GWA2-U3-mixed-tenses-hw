@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A2 Mixed Tenses</title>
+<style>
+  :root {
+    color-scheme: light;
+    font-family: "Instrument Sans", system-ui, sans-serif;
+    color: #27223e;
+    background: #faf8f5;
+    --ink: #27223e;
+    --muted: #5f5874;
+    --purple: #50358e;
+    --line: #e5deee;
+    --correct: #1e6447;
+    --incorrect: #9f3549;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; }
+  button, input { font: inherit; }
+  button { cursor: pointer; touch-action: manipulation; }
+  button:focus-visible, input:focus-visible { outline: 3px solid #8055cf; outline-offset: 3px; }
+  main { width: min(100% - 28px, 680px); margin: clamp(14px, 6vh, 64px) auto; }
+  .hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: clamp(20px, 5vw, 36px);
+    border-radius: 26px;
+    background: #eae0fb;
+    border: 1px solid #e3d5f7;
+  }
+  .hero::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 190px;
+    height: 190px;
+    border: 1px solid #cbb6ee;
+    border-radius: 50%;
+    box-shadow: 0 0 0 20px #e0d0f8, 0 0 0 21px #d2beef, 0 0 0 42px #e5d7f9, 0 0 0 43px #d8c5f3;
+    right: -82px;
+    top: -93px;
+    pointer-events: none;
+  }
+  h1, h2, p { margin: 0; }
+  h1 { font-size: clamp(34px, 7vw, 54px); line-height: 1.04; letter-spacing: -.06em; }
+  .hero p { color: #4e4267; font-size: 15px; line-height: 1.5; margin-top: 11px; max-width: 400px; }
+  .practice {
+    margin-top: 14px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 26px;
+    box-shadow: 0 10px 30px #3929520b;
+    padding: clamp(17px, 5vw, 36px);
+  }
+  .progress-label { font-size: 14px; font-weight: 750; color: var(--muted); }
+  .meter { display: block; width: 100%; height: 7px; margin-top: 9px; appearance: none; border: 0; border-radius: 100px; overflow: hidden; background: #eee8f5; color: #8052bf; }
+  .meter::-webkit-progress-bar { background: #eee8f5; }
+  .meter::-webkit-progress-value { background: #8052bf; border-radius: 100px; }
+  .meter::-moz-progress-bar { background: #8052bf; border-radius: 100px; }
+  .sentence {
+    min-height: 104px;
+    margin-top: 20px;
+    padding: clamp(13px, 4vw, 22px);
+    border-radius: 17px;
+    background: #f7f3fc;
+    font-size: clamp(20px, 4.6vw, 28px);
+    line-height: 1.65;
+    font-weight: 650;
+    letter-spacing: -.025em;
+    overflow-wrap: break-word;
+  }
+  .gap-group { display: inline-block; white-space: nowrap; max-width: 100%; }
+  .answer {
+    width: min(9em, 100% - .75em);
+    min-height: 47px;
+    padding: 5px 9px;
+    border: 2px solid #b39cd7;
+    border-radius: 10px;
+    background: #fff;
+    color: var(--ink);
+    font-size: .86em;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: normal;
+    vertical-align: baseline;
+  }
+  .answer::placeholder { color: #6d5a85; opacity: 1; }
+  .answer[aria-invalid="true"] { border-color: #c46a79; background: #fff2f4; }
+  .answer.is-correct { border-color: #68a98a; background: #e9f7ef; color: var(--correct); }
+  .answer.shake { animation: shake .28s ease-in-out; }
+  @keyframes shake {
+    25%, 75% { transform: translateX(-4px); }
+    50% { transform: translateX(4px); }
+  }
+  @media (prefers-reduced-motion: reduce) { .answer.shake { animation: none; } }
+  .feedback { min-height: 1.4em; margin: 12px 0; font-size: 15px; font-weight: 650; color: var(--muted); }
+  .feedback[data-state="correct"] { color: var(--correct); }
+  .feedback[data-state="incorrect"] { color: var(--incorrect); }
+  .primary {
+    display: block;
+    width: 100%;
+    min-height: 49px;
+    padding: 10px 18px;
+    border: 1px solid transparent;
+    border-radius: 13px;
+    background: var(--purple);
+    color: #fff;
+    font-weight: 750;
+  }
+  @media (hover: hover) { .primary:hover { background: #422976; } }
+  .complete { margin-top: 25px; }
+  .complete h2 { font-size: clamp(24px, 5vw, 34px); line-height: 1.2; letter-spacing: -.035em; }
+  .complete p { margin-top: 9px; color: var(--muted); line-height: 1.5; }
+  .complete .primary { margin-top: 23px; }
+  @media (max-height: 480px) {
+    main { margin-top: 10px; margin-bottom: 14px; }
+    .hero { padding-block: 12px; }
+    .hero h1 { font-size: 29px; }
+    .hero p { margin-top: 5px; }
+    .practice { margin-top: 9px; padding-block: 13px; }
+    .sentence { margin-top: 11px; min-height: 0; padding-block: 9px; }
+    .feedback { margin-block: 7px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header class="hero">
+    <h1>A2 Mixed Tenses</h1>
+    <p>Complete each sentence. Change the verb in the gap to the correct tense.</p>
+  </header>
+
+  <section class="practice" aria-label="Tense practice">
+    <p id="progress-label" class="progress-label" tabindex="-1"></p>
+    <progress id="meter" class="meter" aria-label="Sentences completed" value="0"></progress>
+
+    <form id="exercise" novalidate>
+      <p class="sentence"><span id="before"></span><span class="gap-group"><input id="answer" class="answer" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="go"><span id="attached"></span></span><span id="after"></span></p>
+      <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
+      <button id="check" class="primary" type="submit">Check answer</button>
+    </form>
+
+    <div id="complete" class="complete" hidden>
+      <h2 id="done-title" tabindex="-1">Well done!</h2>
+      <p id="done-copy"></p>
+      <button id="again" class="primary" type="button">Play another round</button>
+    </div>
+    <noscript><p>Open this file in a browser with JavaScript enabled to do the exercise.</p></noscript>
+  </section>
+</main>
+<script>
+  const sentenceBank = {
+    presentSimple: [
+      ["Mia usually ___ her homework after dinner.", "do", "does"],
+      ["Our English lesson ___ at four every Monday.", "start", "starts"],
+      ["My brother ___ his bike to school every day.", "ride", "rides"],
+      ["My cousins often ___ us on Sundays.", "visit", "visit"],
+      ["Dad usually ___ the dishes after dinner.", "wash", "washes"],
+      ["Every morning, Ella ___ a glass of water before breakfast.", "drink", "drinks"]
+    ],
+    presentContinuous: [
+      ["Look! The cat ___ up the tree.", "climb", "is climbing"],
+      ["Listen! The neighbours ___ a song right now.", "sing", "are singing"],
+      ["Please wait a minute. I ___ my shoes on right now.", "put", "am putting"],
+      ["Look out the window! It ___ right now.", "snow", "is snowing"],
+      ["Please be quiet. The baby ___ right now.", "sleep", "is sleeping"],
+      ["Look! The children ___ in the lake.", "swim", "are swimming"]
+    ],
+    pastSimple: [
+      ["Yesterday, we ___ a lost dog outside the library.", "find", "found"],
+      ["Leo ___ his first guitar last Saturday.", "buy", "bought"],
+      ["Nina ___ me a photo of her new bike two days ago.", "send", "sent"],
+      ["Last night, I ___ my keys on the bus and had to call the bus company.", "leave", "left"],
+      ["Our class ___ to the science museum last Friday.", "go", "went"],
+      ["Dad ___ a cake for my birthday last weekend.", "make", "made"]
+    ],
+    pastContinuous: [
+      ["I ___ home when it started to rain. I was already halfway there.", "walk", "was walking"],
+      ["When Mum came home, we ___ a board game. We were already halfway through it.", "play", "were playing"],
+      ["Sam ___ a shower when the doorbell rang, so he didn’t hear it.", "have", "was having"],
+      ["I dropped my phone while I ___ for the bus.", "run", "was running"],
+      ["While the children ___ lunch, the fire alarm went off.", "eat", "were eating"],
+      ["The lights went out while Ella ___ her book.", "read", "was reading"]
+    ]
+  };
+
+  const progressLabel = document.querySelector("#progress-label");
+  const meter = document.querySelector("#meter");
+  const exercise = document.querySelector("#exercise");
+  const before = document.querySelector("#before");
+  const attached = document.querySelector("#attached");
+  const after = document.querySelector("#after");
+  const answer = document.querySelector("#answer");
+  const feedback = document.querySelector("#feedback");
+  const check = document.querySelector("#check");
+  const complete = document.querySelector("#complete");
+  const doneTitle = document.querySelector("#done-title");
+  const doneCopy = document.querySelector("#done-copy");
+  const again = document.querySelector("#again");
+
+  let roundNumber = 0;
+  let round = [];
+  let position = 0;
+  let solved = false;
+
+  function shuffle(items) {
+    for (let index = items.length - 1; index > 0; index--) {
+      const other = Math.floor(Math.random() * (index + 1));
+      [items[index], items[other]] = [items[other], items[index]];
+    }
+    return items;
+  }
+
+  const banks = Object.values(sentenceBank).map(items => shuffle([...items]));
+
+  function startRound() {
+    const offset = (roundNumber % 2) * 3;
+    round = shuffle(banks.flatMap(items => items.slice(offset, offset + 3)));
+    roundNumber++;
+    position = 0;
+    meter.max = round.length;
+    exercise.hidden = false;
+    complete.hidden = true;
+    showSentence(roundNumber > 1);
+  }
+
+  function clearFeedback() {
+    feedback.textContent = "";
+    delete feedback.dataset.state;
+    answer.removeAttribute("aria-invalid");
+    answer.classList.remove("shake");
+  }
+
+  function showSentence(moveFocus) {
+    const [sentence, verb] = round[position];
+    const [start, end] = sentence.split("___");
+    const punctuation = end.match(/^[,.!?]/)?.[0] || "";
+    before.textContent = start;
+    attached.textContent = punctuation;
+    after.textContent = end.slice(punctuation.length);
+    answer.value = "";
+    answer.placeholder = verb;
+    answer.setAttribute("aria-label", sentence.replace("___", "blank") + " Base verb: " + verb);
+    answer.readOnly = false;
+    answer.classList.remove("is-correct");
+    clearFeedback();
+    solved = false;
+    check.textContent = "Check answer";
+    progressLabel.textContent = "Sentence " + (position + 1) + " of " + round.length;
+    meter.value = position;
+    if (moveFocus) progressLabel.focus();
+  }
+
+  function normalize(value) {
+    return value.trim().toLowerCase().replace(/\s+/g, " ");
+  }
+
+  exercise.addEventListener("submit", event => {
+    event.preventDefault();
+    if (solved) {
+      position++;
+      if (position < round.length) {
+        showSentence(true);
+      } else {
+        progressLabel.textContent = round.length + " of " + round.length + " complete";
+        exercise.hidden = true;
+        complete.hidden = false;
+        doneCopy.textContent = "You completed all " + round.length + " sentences.";
+        doneTitle.focus();
+      }
+      return;
+    }
+
+    const typed = normalize(answer.value);
+    const expected = round[position][2];
+    if (typed === expected) {
+      solved = true;
+      answer.readOnly = true;
+      answer.classList.add("is-correct");
+      answer.removeAttribute("aria-invalid");
+      feedback.dataset.state = "correct";
+      feedback.textContent = "Correct!";
+      meter.value = position + 1;
+      check.textContent = position + 1 === round.length ? "Finish round" : "Next sentence";
+      check.focus();
+      return;
+    }
+
+    answer.setAttribute("aria-invalid", "true");
+    feedback.dataset.state = "incorrect";
+    feedback.textContent = typed ? "Try again." : "Type the verb form first.";
+    answer.classList.remove("shake");
+    void answer.offsetWidth;
+    answer.classList.add("shake");
+    answer.focus();
+  });
+
+  answer.addEventListener("input", clearFeedback);
+  again.addEventListener("click", startRound);
+  startRound();
+</script>
+</body>
+</html>
